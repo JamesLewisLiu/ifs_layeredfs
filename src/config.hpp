@@ -10,7 +10,10 @@ struct config_t {
     bool verbose_logs   = false;
     bool developer_mode = false;
     bool disable        = false;
+    bool network_hook   = false;
     std::optional<std::string> logfile;
+    std::optional<std::string> network_ip;
+    std::optional<std::string> network_subnet;
     std::set<istring> allowlist;
     std::set<istring> blocklist;
 

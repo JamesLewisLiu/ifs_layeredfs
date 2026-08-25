@@ -16,6 +16,8 @@ add_project_arguments(
     language: 'cpp',
 )
 
+cpp = meson.get_compiler('cpp')
+
 # note: not using fmt from the wrapdb because it needs pkgconfig which doesn't
 # work for cross builds
 fmt_lib = static_library('fmt',
@@ -76,12 +78,13 @@ layeredfs_lib = static_library('layeredfs',
         'src/imagefs.cpp',
         'src/log.cpp',
         'src/modpath_handler.cpp',
+        'src/network_hook.cpp',
         'src/ramfs_demangler.cpp',
         'src/texture_packer.cpp',
         'src/utils.cpp',
     ],
     link_with: third_party,
-    dependencies: fmt_dep,
+    dependencies: [fmt_dep, cpp.find_library('iphlpapi'), cpp.find_library('ws2_32')],
 )
 
 avs_standalone_lib = static_library('avs_standalone',
@@ -253,6 +256,9 @@ if host_machine.cpu_family() == 'x86_64'
             '--layered-disable',
             '--layered-verbose',
             '--layered-devmode',
+            '--layered-network-hook',
+            '--layered-network-ip=192.168.100.50',
+            '--layered-network-subnet=255.255.255.0',
             '--layered-allowlist=allowed,these folders',
             '--layered-blocklist=blocked,these folders',
             '--layered-logfile=some logfile.log',

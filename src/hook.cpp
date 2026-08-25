@@ -28,6 +28,7 @@
 #include "imagefs.hpp"
 #include "log.hpp"
 #include "modpath_handler.hpp"
+#include "network_hook.hpp"
 #include "ramfs_demangler.hpp"
 #include "texbin.hpp"
 #include "utils.hpp"
@@ -716,6 +717,8 @@ __declspec(dllexport) int init() {
             (LPVOID*)&real_GetLongPathNameA) != MH_OK) {
         log_warning("Couldn't hook GetLongPathNameA");
     }
+
+    install_network_hooks();
 
     if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK) {
         log_warning("Couldn't enable hooks");

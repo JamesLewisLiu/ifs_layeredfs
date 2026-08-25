@@ -12,7 +12,10 @@ TEST(Cmdline, ConfigParsingWorks) {
     EXPECT_EQ(config.verbose_logs, 1);
     EXPECT_EQ(config.developer_mode, 1);
     EXPECT_EQ(config.disable, 1);
+    EXPECT_EQ(config.network_hook, 1);
     EXPECT_EQ(config.logfile, "some logfile.log");
+    EXPECT_EQ(config.network_ip, "192.168.100.50");
+    EXPECT_EQ(config.network_subnet, "255.255.255.0");
     EXPECT_THAT(config.allowlist, ElementsAre("allowed", "these folders"));
     EXPECT_THAT(config.blocklist, ElementsAre("blocked", "these folders"));
     EXPECT_EQ(config.get_mod_folder(), "./some modfolder");

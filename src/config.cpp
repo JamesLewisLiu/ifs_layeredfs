@@ -20,6 +20,9 @@ static constexpr std::string_view ALLOWLIST_FLAG  = "--layered-allowlist=";
 static constexpr std::string_view BLOCKLIST_FLAG  = "--layered-blocklist=";
 static constexpr std::string_view LOGFILE_FLAG    = "--layered-logfile=";
 static constexpr std::string_view MOD_FOLDER_FLAG = "--layered-data-mods-folder=";
+static constexpr std::string_view NETWORK_HOOK_FLAG = "--layered-network-hook";
+static constexpr std::string_view NETWORK_IP_FLAG = "--layered-network-ip=";
+static constexpr std::string_view NETWORK_SUBNET_FLAG = "--layered-network-subnet=";
 
 config_t config;
 
@@ -60,6 +63,8 @@ void load_config() {
             config.developer_mode = true;
         } else if (arg == DISABLE_FLAG) {
             config.disable = true;
+        } else if (arg == NETWORK_HOOK_FLAG) {
+            config.network_hook = true;
         } else if (arg.starts_with(ALLOWLIST_FLAG)) {
             arg.remove_prefix(ALLOWLIST_FLAG.size());
             parse_list(arg, config.allowlist);
@@ -78,20 +83,33 @@ void load_config() {
             if (arg.starts_with("./")) {
                 config.set_mod_folder(std::string(arg));
             }
+        } else if (arg.starts_with(NETWORK_IP_FLAG)) {
+            arg.remove_prefix(NETWORK_IP_FLAG.size());
+            if (!arg.empty()) {
+                config.network_ip = arg;
+            }
+        } else if (arg.starts_with(NETWORK_SUBNET_FLAG)) {
+            arg.remove_prefix(NETWORK_SUBNET_FLAG.size());
+            if (!arg.empty()) {
+                config.network_subnet = arg;
+            }
         }
     }
 }
 
 void print_config() {
     // clang-format off
-    log_info("Options: {}={} {}={} {}={} {}{} {}{} {}{} {}{}",
+    log_info("Options: {}={} {}={} {}={} {}={} {}{} {}{} {}{} {}{} {}{} {}{}",
         VERBOSE_FLAG, config.verbose_logs,
         DEVMODE_FLAG, config.developer_mode,
         DISABLE_FLAG, config.disable,
+        NETWORK_HOOK_FLAG, config.network_hook,
         LOGFILE_FLAG, config.logfile,
         ALLOWLIST_FLAG, config.allowlist,
         BLOCKLIST_FLAG, config.blocklist,
-        MOD_FOLDER_FLAG, config.get_mod_folder()
+        MOD_FOLDER_FLAG, config.get_mod_folder(),
+        NETWORK_IP_FLAG, config.network_ip,
+        NETWORK_SUBNET_FLAG, config.network_subnet
     );
     // clang-format on
 }

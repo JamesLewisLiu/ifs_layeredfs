@@ -128,6 +128,14 @@ folder.
 --layered-data-mods-folder=./some_folder
                   Use a custom mods folder instead of the default ./data_mods
                   MUST start with "./" to avoid path weirdness.
+--layered-network-hook
+                  Expose one IPv4 network adapter to the game and bind IPv4
+                  sockets to all local interfaces. Intended for multi-adapter
+                  setups; disabled by default.
+--layered-network-ip=IP --layered-network-subnet=MASK
+                  Prefer the adapter whose IPv4 network matches IP/MASK.
+                  Both options must be supplied together. Without them, the
+                  default-route adapter is preferred.
 ```
 
 # Logs
