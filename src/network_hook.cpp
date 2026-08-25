@@ -5,6 +5,7 @@
 #include <iphlpapi.h>
 
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <optional>
@@ -206,7 +207,35 @@ int WINAPI bind_hook(SOCKET socket, const sockaddr* name, int name_length) {
 }
 
 bool parse_ipv4(const std::string& text, in_addr* output) {
-    return InetPtonA(AF_INET, text.c_str(), output) == 1;
+    uint32_t octets[4]{};
+    size_t octet_index = 0;
+    size_t digit_count = 0;
+
+    for (const char character : text) {
+        if (character == '.') {
+            if (octet_index >= 3 || digit_count == 0) {
+                return false;
+            }
+            octet_index++;
+            digit_count = 0;
+            continue;
+        }
+        if (character < '0' || character > '9' || digit_count == 3) {
+            return false;
+        }
+        octets[octet_index] = octets[octet_index] * 10 + static_cast<uint32_t>(character - '0');
+        if (octets[octet_index] > 255) {
+            return false;
+        }
+        digit_count++;
+    }
+
+    if (octet_index != 3 || digit_count == 0) {
+        return false;
+    }
+    output->s_addr = htonl(
+        (octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]);
+    return true;
 }
 
 } // namespace
